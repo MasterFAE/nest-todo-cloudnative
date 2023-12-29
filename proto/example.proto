@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package example;
+
+service ExampleService {
+  rpc Create(CreateExampleDto) returns (Example);
+  rpc Get(GetExampleById) returns (Example);
+  rpc GetAll(Empty) returns (Examples);
+  rpc Update(UpdateExampleDto) returns (Example);
+  rpc Delete(DeleteExampleDto) returns (Empty);
+}
+
+message Empty {}
+
+message Example {
+  int32 id = 1;
+  string name = 2;
+  bool published = 3;
+}
+
+message Examples {
+  repeated Example examples = 1;
+}
+
+message CreateExampleDto {
+  int32 id = 1;
+  string name = 2;
+}
+
+message GetExampleById {
+  int32 id = 1;
+}
+
+message UpdateExampleDto {
+  int32 id = 1;
+  string name = 2;
+  bool published = 3;
+}
+
+message DeleteExampleDto {
+  int32 id = 1;
+}

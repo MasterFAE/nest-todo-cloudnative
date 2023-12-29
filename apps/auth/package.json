@@ -1,0 +1,13 @@
+{
+  "name": "@auth-base/auth",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "bcryptjs": "^2.4.3",
+    "passport-jwt": "^4.0.1"
+  }
+}
