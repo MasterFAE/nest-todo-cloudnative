@@ -3,14 +3,15 @@ import { AuthService } from './auth.service';
 import { RpcException } from '@nestjs/microservices';
 import {
   AuthServiceControllerMethods,
-  CreateUserDto,
   IAuthServiceController,
-  JwtToken,
   LoginDto,
-  UserJwt,
-  UserJwtPayload,
   UserTokenPayload,
-} from '@app/shared';
+  CreateUserDto,
+  JwtToken,
+  UserJwtPayload,
+  UserJwt,
+} from '@app/shared/types/service/auth';
+import serviceExceptionGenerator from '@app/shared/helper/functions/serviceExceptionGenerator';
 
 @Controller()
 @AuthServiceControllerMethods()
@@ -21,7 +22,8 @@ export class AuthController implements IAuthServiceController {
     try {
       const userWithToken = await this.authService.login(data);
       return userWithToken;
-    } catch ({ error }) {
+    } catch (er) {
+      const { error } = serviceExceptionGenerator(er);
       throw new RpcException(error);
     }
   }
@@ -30,17 +32,18 @@ export class AuthController implements IAuthServiceController {
     try {
       const userWithToken = await this.authService.register(data);
       return userWithToken;
-    } catch ({ error }) {
+    } catch (er) {
+      const { error } = serviceExceptionGenerator(er);
       throw new RpcException(error);
     }
   }
 
-  // @UseGuards(JwtGuard)
   async verifyToken(data: JwtToken): Promise<UserJwtPayload> {
     try {
       const res = await this.authService.verifyToken(data);
       return res;
-    } catch ({ error }) {
+    } catch (er) {
+      const { error } = serviceExceptionGenerator(er);
       throw new RpcException(error);
     }
   }

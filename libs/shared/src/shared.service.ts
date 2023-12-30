@@ -8,11 +8,11 @@ import {
 } from '@nestjs/microservices';
 import ISharedService from './interface/ISharedService';
 import { join } from 'path';
+import { GRPC_PACKAGE } from './types';
 
 @Injectable()
 export class SharedService implements ISharedService {
   constructor(private readonly configService: ConfigService) {}
-
   getRmqOptions(queue: string): RmqOptions {
     const USER = this.configService.get('RABBITMQ_USER');
     const PASSWORD = this.configService.get('RABBITMQ_PASS');
@@ -30,14 +30,17 @@ export class SharedService implements ISharedService {
       },
     };
   }
-
-  getGrpcOptions(name: string, protoName: string): GrpcOptions {
+  /**
+   * Sets up gRPC server connection
+   */
+  getGrpcOptions({ packageName, protoName, port }: GRPC_PACKAGE): GrpcOptions {
     return {
       transport: Transport.GRPC,
       options: {
-        package: name,
+        package: packageName,
         protoPath: join(__dirname, `../${protoName}.proto`),
-        url: `${name}:50051`,
+        url: `localhost:${port}`,
+        // url: env != 'local' ? `${name}:50051` : 'localhost:5000',
       },
     };
   }

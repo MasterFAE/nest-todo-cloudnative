@@ -10,8 +10,8 @@ import { Reflector } from '@nestjs/core';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { GRPC_AUTH, IAuthServiceClient, UserJwt } from '../types';
-import setCookieOptions from '@app/shared/setCookieOptions';
+import setCookieOptions from '@app/shared/helper/functions/setCookieOptions';
+import { IAuthServiceClient, GRPC_AUTH, UserJwt } from '../types/service/auth';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

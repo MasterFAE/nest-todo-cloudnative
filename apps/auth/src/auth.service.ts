@@ -3,17 +3,18 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { PrismaService } from '@app/prisma';
 import * as bcrypt from 'bcryptjs';
-import {
-  CreateUserDto,
-  LoginDto,
-  User,
-  JwtToken,
-  UserJwtPayload,
-  UserTokenPayload,
-  UserJwt,
-} from '@app/shared';
+
 import { CustomRpcException } from '@app/shared/exceptions/custom-rpc.exception';
 import { Status } from '@grpc/grpc-js/build/src/constants';
+import {
+  CreateUserDto,
+  JwtToken,
+  LoginDto,
+  User,
+  UserJwt,
+  UserJwtPayload,
+  UserTokenPayload,
+} from '@app/shared/types/service/auth';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,6 @@ export class AuthService {
     const checkUser = await this.checkUser(email, username);
     if (checkUser && checkUser.id)
       throw new CustomRpcException(Status.ALREADY_EXISTS);
-
     const hash = bcrypt.hashSync(password, 10);
     const newUser = await this.prisma.user.create({
       data: {
@@ -39,7 +39,6 @@ export class AuthService {
         password: hash,
       },
     });
-
     const { token } = await this.signToken({
       username,
       email,

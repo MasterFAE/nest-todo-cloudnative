@@ -23,13 +23,13 @@ message LoginDto {
 
 // Returns User information stored inside JWT
 message UserJwt {
-  int32 sub = 1;
+  string sub = 1;
   string username = 2;
   string email = 3;
 }
 // Returns User information to generate JWT
 message UserOfJwt {
-  int32 sub = 1;
+  string sub = 1;
   string username = 2;
   string email = 3;
 }

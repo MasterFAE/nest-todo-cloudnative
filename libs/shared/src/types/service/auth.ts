@@ -2,14 +2,14 @@ import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { GRPC_PACKAGE } from '@app/shared';
 
-export const GRPC_AUTH = {
+export const GRPC_AUTH: GRPC_PACKAGE = {
   protoName: 'auth',
   packageName: 'auth',
   serviceName: 'AuthService',
+  port: 50051,
 };
-
-export interface Empty {}
 
 export interface JwtToken {
   token: string;
@@ -45,14 +45,14 @@ export class LoginDto {
 
 /** Returns User information stored inside JWT */
 export interface UserJwt {
-  sub: number;
+  sub: string;
   username: string;
   email: string;
 }
 
 /** Returns User information to generate JWT */
 export interface UserOfJwt {
-  id: number;
+  id: string;
   username: string;
   email: string;
 }
@@ -70,7 +70,7 @@ export interface UserTokenPayload {
 }
 
 export interface User {
-  id: number;
+  id: string;
   username: string;
   email: string;
   password: string;
@@ -89,19 +89,9 @@ export interface IAuthServiceClient {
 }
 
 export interface IAuthServiceController {
-  login(
-    request: LoginDto,
-  ):
-    | Promise<UserTokenPayload>
-    | Observable<UserTokenPayload>
-    | UserTokenPayload;
+  login(request: LoginDto): Promise<UserTokenPayload>;
 
-  register(
-    request: CreateUserDto,
-  ):
-    | Promise<UserTokenPayload>
-    | Observable<UserTokenPayload>
-    | UserTokenPayload;
+  register(request: CreateUserDto): Promise<UserTokenPayload>;
 
   verifyToken(
     request: JwtToken,

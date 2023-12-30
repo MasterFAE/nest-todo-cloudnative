@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package canva;
+
+service CanvaService {
+  rpc Create(CanvaCreate) returns (Canva);
+  rpc Delete(CanvaDelete) returns (Empty);
+  rpc Update(CanvaUpdate) returns (Canva);
+  rpc Get(CanvaGetId) returns (Canva);
+  rpc GetAll(CanvaGetAll) returns (Canvas);
+}
+
+//
+// Entity
+//
+
+message Empty {}
+
+message Canvas {
+  repeated Canva canvas = 1;
+}
+
+message Canva {
+  string id = 1;
+  string name = 2;
+  string userId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+//
+// Action
+//
+
+message CanvaGetId {
+  string id = 1;
+  string userId = 2;
+}
+
+message CanvaCreate {
+  string name = 1;
+  string userId = 2;
+}
+
+message CanvaUpdate {
+  string id = 1;
+  string name = 2;
+  string userId = 3;
+}
+
+message CanvaDelete {
+  string id = 1;
+  string userId = 2;
+}
+
+message CanvaGetAll {
+   string userId = 1;
+}

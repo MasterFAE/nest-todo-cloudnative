@@ -2,8 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { GRPC_AUTH, SharedService } from '@app/shared';
+import { SharedService } from '@app/shared';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { GRPC_AUTH } from '@app/shared/types/service/auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -21,14 +22,12 @@ async function bootstrap() {
   );
 
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(GRPC_AUTH.packageName, GRPC_AUTH.protoName),
+    sharedService.getGrpcOptions(GRPC_AUTH),
   );
-
-  logger.verbose('[Auth Service]: Auth Service is up!');
-  logger.verbose('[Auth Service]: Auth Service is up!');
-  logger.verbose('[Auth Service]: Auth Service is up!');
-
   await app.startAllMicroservices();
-  await app.listen(3001);
+
+  logger.verbose('------------------------------------');
+  logger.verbose('[Auth Service]: Auth Service is up!');
+  logger.verbose('------------------------------------');
 }
 bootstrap();

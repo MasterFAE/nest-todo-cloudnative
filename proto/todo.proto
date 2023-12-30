@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package todo;
+
+service TodoService {
+  rpc Create(TodoCreate) returns (Todo);
+  rpc Delete(TodoDelete) returns (Empty);
+  rpc Update(TodoUpdate) returns (Todo);
+  rpc Get(TodoGetId) returns (Todo);
+  rpc GetAll(TodoGetAll) returns (Todos);
+  rpc UpdateOrder(TodoUpdateOrder) returns (Todo);
+  rpc GetCanvaItems(TodoGetCanvaItems) returns (Todos);
+}
+
+//
+// Entity
+//
+
+message Empty {}
+
+
+message Todos {
+  repeated Todo todos = 1;
+}
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string canvaId = 4;
+  int32 order = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  string userId = 8;
+}
+
+
+//
+// Action
+//
+
+message TodoGetId {
+  string id = 1;
+  string userId = 2;
+}
+
+message TodoCreate {
+  string title = 1;
+  string content = 2;
+  string userId = 3;
+  string canvaId = 4;
+}
+
+message TodoUpdate {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string userId = 4;
+}
+
+message TodoDelete {
+  string id = 1;
+  string userId = 5;
+}
+
+message TodoUpdateOrder {
+  string id = 1;
+  int32 order = 2;
+  string userId = 3;
+}
+
+message TodoGetAll {
+  string userId = 1;
+}
+
+message TodoGetCanvaItems {
+  string userId = 1;
+  string canvaId = 2;
+}

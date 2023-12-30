@@ -1,6 +1,7 @@
-import { GRPC_AUTH, GRPC_EXAMPLE, SharedModule } from '@app/shared';
+import { SharedModule } from '@app/shared';
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
+import { GRPC_AUTH } from '@app/shared/types/service/auth';
 
 @Module({
   imports: [
