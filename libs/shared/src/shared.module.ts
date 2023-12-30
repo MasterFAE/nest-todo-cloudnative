@@ -8,12 +8,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { join } from 'path';
-
-interface GrpcModule {
-  serviceName: string;
-  packageName: string;
-  protoName: string;
-}
+import { GRPC_PACKAGE } from './types';
 
 @Module({
   imports: [
@@ -61,19 +56,21 @@ export class SharedModule {
     };
   }
 
-  static registerGRPC(data: GrpcModule[]) {
+  /**
+   * Registers a gRPC client module
+   */
+  static registerGRPC(data: GRPC_PACKAGE[]) {
     let mappedOptions: ClientsModuleOptions = data.map(
-      ({ packageName, serviceName, protoName }) => ({
+      ({ packageName, serviceName, protoName, port }) => ({
         name: serviceName,
         transport: Transport.GRPC,
         options: {
           package: packageName,
           protoPath: join(__dirname, `../${protoName}.proto`),
-          url: `${packageName}:50051`,
+          url: `localhost:${port}`,
         },
       }),
     );
-
     return ClientsModule.register(mappedOptions);
   }
 }

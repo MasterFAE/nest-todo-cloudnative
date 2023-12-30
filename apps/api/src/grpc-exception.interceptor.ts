@@ -42,8 +42,11 @@ export class GrpcErrorInterceptor implements NestInterceptor {
               throw new ForbiddenException('Permission denied');
             case Status.UNAUTHENTICATED:
               throw new UnauthorizedException('Unauthorized');
+            case Status.UNAVAILABLE:
+              throw new InternalServerErrorException('Server is unavailable');
+
             default:
-              console.error('[GRPC] Unknown error occured');
+              console.error('[GRPC] ERROR ????????????');
               console.error(err);
               throw new InternalServerErrorException('Internal Server Error');
           }

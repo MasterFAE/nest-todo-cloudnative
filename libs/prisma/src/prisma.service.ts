@@ -7,6 +7,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger(PrismaService.name);
   constructor(private configService: ConfigService) {
     super({
+      errorFormat: 'minimal',
+      log: ['info', 'warn', 'error'],
       datasources: {
         db: {
           url: configService.get('DATABASE_URL'),

@@ -1,25 +1,25 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { GRPC_AUTH, GRPC_EXAMPLE, SharedModule } from '@app/shared';
+import { Logger, Module } from '@nestjs/common';
+import { SharedModule } from '@app/shared';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from '@app/shared/guards/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { GrpcErrorInterceptor } from './grpc-exception.interceptor';
-import { ExampleModule } from './example/example.module';
+import { TodoModule } from './todo/todo.module';
+import { GRPC_AUTH } from '@app/shared/types/service/auth';
+import { CanvaModule } from './canva/canva.module';
 
 @Module({
   imports: [
+    TodoModule,
     AuthModule,
-    ExampleModule,
+    CanvaModule,
     SharedModule.registerRMQ('AUTH_SERVICE', process.env.RABBITMQ_AUTH_QUEUE),
-    SharedModule.registerGRPC([GRPC_AUTH, GRPC_EXAMPLE]),
+    SharedModule.registerGRPC([GRPC_AUTH]),
   ],
-  controllers: [],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_INTERCEPTOR, useClass: GrpcErrorInterceptor },
     Logger,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {}
-}
+export class AppModule {}
