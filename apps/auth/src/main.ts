@@ -17,9 +17,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getRmqOptions(AUTH_QUEUE),
-  );
+  // app.connectMicroservice<MicroserviceOptions>(
+  //   sharedService.getRmqOptions(AUTH_QUEUE),
+  // );
 
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(GRPC_AUTH),

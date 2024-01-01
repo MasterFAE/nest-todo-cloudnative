@@ -7,14 +7,15 @@ import * as bcrypt from 'bcryptjs';
 import { CustomRpcException } from '@app/shared/exceptions/custom-rpc.exception';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import {
-  CreateUserDto,
   JwtToken,
-  LoginDto,
-  User,
-  UserJwt,
+  UserSignJwt,
   UserJwtPayload,
   UserTokenPayload,
+  UserId,
+  UserCreate,
+  UserLogin,
 } from '@app/shared/types/service/auth';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,7 @@ export class AuthService {
     username,
     email,
     password,
-  }: CreateUserDto): Promise<UserTokenPayload> {
+  }: UserCreate): Promise<UserTokenPayload> {
     const checkUser = await this.checkUser(email, username);
     if (checkUser && checkUser.id)
       throw new CustomRpcException(Status.ALREADY_EXISTS);
@@ -51,7 +52,7 @@ export class AuthService {
     return { user: noPasswordUser, token };
   }
 
-  async login({ email, password }: LoginDto): Promise<UserTokenPayload> {
+  async login({ email, password }: UserLogin): Promise<UserTokenPayload> {
     const checkUser = await this.checkUser(email);
     if (!checkUser) throw new CustomRpcException(Status.INVALID_ARGUMENT);
 
@@ -66,7 +67,6 @@ export class AuthService {
       email,
       sub: noPasswordUser.id,
     });
-
     return { user: noPasswordUser, token };
   }
 
@@ -77,6 +77,16 @@ export class AuthService {
       },
     });
     return user;
+  }
+
+  async getUserFromId(data: UserId): Promise<Omit<User, 'password'>> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: data.id,
+      },
+    });
+    let { password, ..._user } = user;
+    return _user;
   }
 
   async verifyToken({ token }: JwtToken): Promise<UserJwtPayload> {
@@ -97,7 +107,7 @@ export class AuthService {
     }
   }
 
-  async signToken(user: UserJwt): Promise<JwtToken> {
+  async signToken(user: UserSignJwt): Promise<JwtToken> {
     const token = this.jwtService.sign({ user });
     return { token };
   }

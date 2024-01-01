@@ -8,11 +8,12 @@ COPY nest-cli.json nest-cli.json
 COPY libs libs
 COPY apps/auth apps/auth
 COPY prisma ./prisma/
+COPY proto proto
+
 RUN cd apps/auth && npm install
 RUN npm install && npx prisma generate
 
-# RUN npm run build auth
-# CMD [ "npm", "run", "start:dev", "auth" ]
+RUN npm run build auth
 
 FROM node:alpine AS production
 EXPOSE 50051

@@ -4,12 +4,14 @@ import { RpcException } from '@nestjs/microservices';
 import {
   AuthServiceControllerMethods,
   IAuthServiceController,
-  LoginDto,
   UserTokenPayload,
-  CreateUserDto,
   JwtToken,
   UserJwtPayload,
-  UserJwt,
+  UserSignJwt,
+  UserCreate,
+  UserLogin,
+  UserId,
+  UserResponse,
 } from '@app/shared/types/service/auth';
 import serviceExceptionGenerator from '@app/shared/helper/functions/serviceExceptionGenerator';
 
@@ -18,7 +20,17 @@ import serviceExceptionGenerator from '@app/shared/helper/functions/serviceExcep
 export class AuthController implements IAuthServiceController {
   constructor(private readonly authService: AuthService) {}
 
-  async login(data: LoginDto): Promise<UserTokenPayload> {
+  async currentUser(data: UserId): Promise<UserResponse> {
+    try {
+      const userWithToken = await this.authService.getUserFromId(data);
+      return userWithToken;
+    } catch (er) {
+      const { error } = serviceExceptionGenerator(er);
+      throw new RpcException(error);
+    }
+  }
+
+  async login(data: UserLogin): Promise<UserTokenPayload> {
     try {
       const userWithToken = await this.authService.login(data);
       return userWithToken;
@@ -28,7 +40,7 @@ export class AuthController implements IAuthServiceController {
     }
   }
 
-  async register(data: CreateUserDto): Promise<UserTokenPayload> {
+  async register(data: UserCreate): Promise<UserTokenPayload> {
     try {
       const userWithToken = await this.authService.register(data);
       return userWithToken;
@@ -52,7 +64,7 @@ export class AuthController implements IAuthServiceController {
     return this.authService.decodeToken(data);
   }
 
-  async signToken(data: UserJwt): Promise<JwtToken> {
+  async signToken(data: UserSignJwt): Promise<JwtToken> {
     return this.authService.signToken(data);
   }
 }

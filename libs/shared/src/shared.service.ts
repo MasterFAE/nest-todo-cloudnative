@@ -33,14 +33,18 @@ export class SharedService implements ISharedService {
   /**
    * Sets up gRPC server connection
    */
-  getGrpcOptions({ packageName, protoName, port }: GRPC_PACKAGE): GrpcOptions {
+  getGrpcOptions({
+    packageName,
+    protoName,
+    host,
+    port,
+  }: GRPC_PACKAGE): GrpcOptions {
     return {
       transport: Transport.GRPC,
       options: {
         package: packageName,
         protoPath: join(__dirname, `../${protoName}.proto`),
-        url: `localhost:${port}`,
-        // url: env != 'local' ? `${name}:50051` : 'localhost:5000',
+        url: `${host}:${port}`,
       },
     };
   }

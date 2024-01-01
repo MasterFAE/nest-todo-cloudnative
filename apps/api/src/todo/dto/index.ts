@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -32,14 +33,13 @@ export class UpdateTodoDto {
   @MaxLength(250, { message: 'Title cannot be longer than 250 characters' })
   title: string;
 
-  @IsNotEmpty({ message: 'Canva is required' })
-  @IsString({ message: 'Invalid id' })
-  canvaId: string;
-
   @IsOptional()
   @IsString({ message: 'Content must be string' })
   @MaxLength(2500, { message: 'Content cannot be longer than 2500 characters' })
   content: string;
+
+  @IsBoolean()
+  status: boolean;
 }
 
 export class UpdateTodoOrderDto {

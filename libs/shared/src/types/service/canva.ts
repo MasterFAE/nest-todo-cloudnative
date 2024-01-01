@@ -7,7 +7,8 @@ export const GRPC_CANVA: GRPC_PACKAGE = {
   protoName: 'canva',
   packageName: 'canva',
   serviceName: 'CanvaService',
-  port: 50054,
+  host: process.env['CANVA_SERVICE_HOST'],
+  port: process.env['CANVA_SERVICE_PORT'],
 };
 
 interface Empty {}

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - image: faemeister/nest-todo_api
+          name: nest-todo-api
+          env:
+            - name: 'AUTH_SERVICE_HOST'
+              value: 'auth'
+            - name: 'AUTH_SERVICE_PORT'
+              value: '50051'
+            - name: 'CANVA_SERVICE_HOST'
+              value: 'canva'
+            - name: 'CANVA_SERVICE_PORT'
+              value: '50051'
+            - name: 'TODO_SERVICE_HOST'
+              value: 'todo'
+            - name: 'TODO_SERVICE_PORT'
+              value: '50051'

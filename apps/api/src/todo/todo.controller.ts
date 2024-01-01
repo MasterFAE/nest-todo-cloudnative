@@ -1,5 +1,4 @@
 import { User } from '@app/shared/decorators/user.decorator';
-import { OwnerGuard } from '@app/shared/guards/owner.guard';
 import { GRPC_TODO, ITodoServiceClient } from '@app/shared/types/service/todo';
 import {
   Controller,
@@ -11,7 +10,6 @@ import {
   Delete,
   Param,
   Body,
-  UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
@@ -32,8 +30,6 @@ export class TodoController implements OnModuleInit {
   @Get()
   async getAll(@User('sub') userId) {
     try {
-      console.log(this.todoServer);
-
       const serverResponse = await firstValueFrom(
         this.todoServer.getAll({ userId }),
       );
@@ -56,7 +52,6 @@ export class TodoController implements OnModuleInit {
   }
 
   @Post('')
-  @UseGuards(OwnerGuard)
   async create(@User('sub') userId, @Body() data: CreateTodoDto) {
     try {
       const serverResponse = await firstValueFrom(
@@ -69,7 +64,6 @@ export class TodoController implements OnModuleInit {
   }
 
   @Put('')
-  @UseGuards(OwnerGuard)
   async update(@User('sub') userId, @Body() data: UpdateTodoDto) {
     try {
       const serverResponse = await firstValueFrom(
@@ -82,7 +76,6 @@ export class TodoController implements OnModuleInit {
   }
 
   @Put('order')
-  @UseGuards(OwnerGuard)
   async updateOrder(@User('sub') userId, @Body() data: UpdateTodoOrderDto) {
     try {
       const serverResponse = await firstValueFrom(

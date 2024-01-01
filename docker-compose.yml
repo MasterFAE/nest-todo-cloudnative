@@ -11,8 +11,8 @@ services:
       - 15672:15672
     env_file:
       - .env
-    # networks:
-    #   - api-network
+    networks:
+      - api-network
   db:
     container_name: postgres-db
     image: postgres:latest
@@ -20,29 +20,46 @@ services:
       - 5432:5432
     env_file:
       - .env
-    # networks:
-    #   - api-network
-  # api:
+    networks:
+      - api-network
+  api:
+    build:
+      target: development
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    command: npm run start:dev api
+    ports:
+      - 3000:3000
+    volumes:
+      - '.:/usr/src/app'
+      - ./proto:/proto
+    env_file:
+      - .env
+    networks:
+      - api-network
+  auth:
+    build:
+      target: development
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    command: npm run start:dev auth
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+      - ./proto:/proto
+    env_file:
+      - .env
+    networks:
+      - api-network
+  # todo:
   #   build:
   #     target: development
   #     context: .
-  #     dockerfile: ./apps/api/Dockerfile
-  #   command: npm run start:dev api
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - '.:/usr/src/app'
-  #     - ./proto:/proto
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - api-network
-  # auth:
-  #   build:
-  #     target: development
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #   command: npm run start:dev auth
+  #     dockerfile: ./apps/todo/Dockerfile
+  #   command: npm run start:dev todo
   #   depends_on:
   #     - db
   #     - rabbitmq
@@ -54,21 +71,22 @@ services:
   #     - .env
   #   networks:
   #     - api-network
-  # example:
+  # canva:
   #   build:
   #     target: development
   #     context: .
-  #     dockerfile: ./apps/example/Dockerfile
-  #   command: npm run start:dev example
+  #     dockerfile: ./apps/canva/Dockerfile
+  #   command: npm run start:dev canva
   #   depends_on:
   #     - db
   #     - rabbitmq
   #   volumes:
   #     - '.:/usr/src/app'
+  #     - '/usr/src/app/node_modules'
   #     - ./proto:/proto
   #   env_file:
   #     - .env
   #   networks:
   #     - api-network
-# networks:
-#   api-network:
+networks:
+  api-network:

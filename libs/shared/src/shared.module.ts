@@ -61,13 +61,13 @@ export class SharedModule {
    */
   static registerGRPC(data: GRPC_PACKAGE[]) {
     let mappedOptions: ClientsModuleOptions = data.map(
-      ({ packageName, serviceName, protoName, port }) => ({
+      ({ packageName, serviceName, protoName, port, host }) => ({
         name: serviceName,
         transport: Transport.GRPC,
         options: {
           package: packageName,
           protoPath: join(__dirname, `../${protoName}.proto`),
-          url: `localhost:${port}`,
+          url: `${host}:${port}`,
         },
       }),
     );

@@ -11,7 +11,11 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import setCookieOptions from '@app/shared/helper/functions/setCookieOptions';
-import { IAuthServiceClient, GRPC_AUTH, UserJwt } from '../types/service/auth';
+import {
+  IAuthServiceClient,
+  GRPC_AUTH,
+  UserSignJwt,
+} from '../types/service/auth';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -74,7 +78,7 @@ export class AuthGuard implements CanActivate {
    * @param context
    * @param user
    */
-  async refreshToken(context: ExecutionContext, user: UserJwt) {
+  async refreshToken(context: ExecutionContext, user: UserSignJwt) {
     console.log('Refresh Token Middleware Triggered');
     const { token: newToken } = await firstValueFrom(
       this.authService.signToken(user),

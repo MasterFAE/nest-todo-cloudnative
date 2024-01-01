@@ -3,32 +3,35 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
+  rpc CurrentUser(UserId) returns (UserResponse);
   rpc Login(LoginDto) returns (UserTokenPayload);
   rpc Register(CreateUserDto) returns (UserTokenPayload);
   rpc VerifyToken(JwtToken) returns (UserJwtPayload);
   rpc DecodeToken(JwtToken) returns (UserJwtPayload);
-  rpc SignToken(UserJwt) returns (JwtToken);
+  rpc SignToken(UserSignJwt) returns (JwtToken);
 }
 
 message Empty {}
+
+
+message UserId {
+  string id = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string createdAt = 4;
+  string lastOnline = 5;
+}
 
 message JwtToken {
   string token = 1;
 }
 
-message LoginDto {
-  string email = 1;
-  string password = 2;
-}
-
 // Returns User information stored inside JWT
-message UserJwt {
-  string sub = 1;
-  string username = 2;
-  string email = 3;
-}
-// Returns User information to generate JWT
-message UserOfJwt {
+message UserSignJwt {
   string sub = 1;
   string username = 2;
   string email = 3;
@@ -36,21 +39,20 @@ message UserOfJwt {
 
 // Returns User and expiring date of the token
 message UserJwtPayload {
-  UserJwt user = 1;
+  UserSignJwt user = 1;
   int32 exp = 2;
 }
 
 // Returns User and generated JWT token
 message UserTokenPayload {
-  UserJwt user = 1;
+  UserResponse user = 1;
   string token = 2;
 }
 
-message User {
-  int32 id = 1;
-  string username = 2;
-  string email = 3;
-  string password = 4;
+
+message LoginDto {
+  string email = 1;
+  string password = 2;
 }
 
 message CreateUserDto {

@@ -1,112 +1,96 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import { GRPC_PACKAGE } from '@app/shared';
 
 export const GRPC_AUTH: GRPC_PACKAGE = {
   protoName: 'auth',
   packageName: 'auth',
   serviceName: 'AuthService',
-  port: 50051,
+  host: process.env['AUTH_SERVICE_HOST'],
+  port: process.env['AUTH_SERVICE_PORT'],
 };
+
+export interface UserResponse {
+  id: string;
+  username: string;
+  email: string;
+  createdAt: Date;
+  lastOnline: Date;
+}
 
 export interface JwtToken {
   token: string;
 }
 
-export class CreateUserDto {
-  @Transform(({ value }) => value.trim())
-  @IsNotEmpty()
-  @MinLength(4)
-  @MaxLength(20)
-  username: string;
-
-  @IsNotEmpty()
-  @MinLength(8)
-  @MaxLength(20)
-  password: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-}
-
-export class LoginDto {
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @MinLength(8)
-  @MaxLength(20)
-  password: string;
+export interface UserId {
+  id: string;
 }
 
 /** Returns User information stored inside JWT */
-export interface UserJwt {
+export interface UserSignJwt {
   sub: string;
-  username: string;
-  email: string;
-}
-
-/** Returns User information to generate JWT */
-export interface UserOfJwt {
-  id: string;
   username: string;
   email: string;
 }
 
 /** Returns User and expiring date of the token */
 export interface UserJwtPayload {
-  user: UserJwt | undefined;
+  user: UserSignJwt | undefined;
   exp: number;
 }
 
 /** Returns User and generated JWT token */
 export interface UserTokenPayload {
-  user: UserOfJwt | undefined;
+  user: UserResponse | undefined;
   token: string;
 }
 
-export interface User {
-  id: string;
+export interface UserCreate {
   username: string;
+  password: string;
+  email: string;
+}
+
+export interface UserLogin {
   email: string;
   password: string;
 }
 
 export interface IAuthServiceClient {
-  login(request: LoginDto): Observable<Promise<UserTokenPayload>>;
+  login(data: UserLogin): Observable<Promise<UserTokenPayload>>;
 
-  register(request: CreateUserDto): Observable<Promise<UserTokenPayload>>;
+  register(data: UserCreate): Observable<Promise<UserTokenPayload>>;
 
-  verifyToken(request: JwtToken): Observable<Promise<UserJwtPayload>>;
+  verifyToken(data: JwtToken): Observable<Promise<UserJwtPayload>>;
 
-  decodeToken(request: JwtToken): Observable<Promise<UserJwtPayload>>;
+  decodeToken(data: JwtToken): Observable<Promise<UserJwtPayload>>;
 
-  signToken(request: UserJwt): Observable<Promise<JwtToken>>;
+  signToken(data: UserSignJwt): Observable<Promise<JwtToken>>;
+
+  currentUser(data: UserId): Observable<Promise<UserResponse>>;
 }
 
 export interface IAuthServiceController {
-  login(request: LoginDto): Promise<UserTokenPayload>;
+  login(data: UserLogin): Promise<UserTokenPayload>;
 
-  register(request: CreateUserDto): Promise<UserTokenPayload>;
+  register(data: UserCreate): Promise<UserTokenPayload>;
 
   verifyToken(
-    request: JwtToken,
+    data: JwtToken,
   ):
     | Promise<UserJwtPayload>
     | Observable<Promise<UserJwtPayload>>
     | UserJwtPayload;
 
   decodeToken(
-    request: JwtToken,
+    data: JwtToken,
   ): Promise<UserJwtPayload> | Observable<UserJwtPayload> | UserJwtPayload;
 
   signToken(
-    request: UserJwt,
+    data: UserSignJwt,
   ): Promise<JwtToken> | Observable<JwtToken> | JwtToken;
+
+  currentUser(data: UserId): Promise<UserResponse>;
 }
 
 export function AuthServiceControllerMethods() {
@@ -117,6 +101,7 @@ export function AuthServiceControllerMethods() {
       'verifyToken',
       'decodeToken',
       'signToken',
+      'currentUser',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(

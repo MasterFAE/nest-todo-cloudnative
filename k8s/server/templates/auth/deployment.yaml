@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: auth
+  name: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - image: faemeister/nest-todo_auth
+          name: nest-todo-auth
+          ports:
+            - containerPort: 50051
+          envFrom:
+            - secretRef:
+                name: databaseurl
+            - secretRef:
+                name: jwtsecret
+          env:
+            - name: 'AUTH_SERVICE_HOST'
+              value: '0.0.0.0'
+            - name: 'AUTH_SERVICE_PORT'
+              value: '50051'

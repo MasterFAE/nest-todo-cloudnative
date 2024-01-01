@@ -19,20 +19,21 @@ export class TodoService {
 
   async create(data: TodoCreate): Promise<Todo> {
     const { userId, canvaId, ...todoData } = data;
-    const lastTodo = await this.getLastTodo({ canvaId, userId });
+    let lastTodo = await this.getLastTodo({ canvaId, userId });
+
     const todo = await this.prisma.todo.create({
       data: {
         ...todoData,
         user: { connect: { id: userId } },
         canva: { connect: { id: canvaId, userId } },
-        order: lastTodo.order + 1,
+        order: lastTodo ? lastTodo.order + 1 : 0,
       },
     });
 
     return todo;
   }
 
-  async getLastTodo({ canvaId, userId }): Promise<Todo> {
+  async getLastTodo({ canvaId, userId }): Promise<Todo | null> {
     const lastTodo = await this.prisma.todo.findFirst({
       where: { canvaId, userId },
       orderBy: { order: 'desc' },
@@ -45,26 +46,24 @@ export class TodoService {
     const todo = await this.prisma.todo.findFirst({
       where: { canvaId, order },
     });
+
     return todo;
   }
 
   async delete(data: TodoDelete): Promise<void> {
-    const todo = await this.prisma.todo.findFirst({ where: data });
-    if (!todo)
-      throw new CustomRpcException(
-        Status.PERMISSION_DENIED,
-        'This todo does not belong to the user or does not exist',
-      );
+    const { id, userId } = data;
+    const todo = await this.get({ id, userId });
+
     await this.prisma.todo.delete({ where: { id: todo.id } });
   }
 
   async update(data: TodoUpdate): Promise<Todo> {
-    const { id, userId, title, content } = data;
+    const { id, userId, title, content, status } = data;
     const { canvaId } = await this.get({ id, userId });
 
     const todo = await this.prisma.todo.update({
       where: { id, userId, canvaId },
-      data: { title, content },
+      data: { title, content, status },
     });
 
     return todo;
@@ -91,7 +90,11 @@ export class TodoService {
   async updateOrder(data: TodoUpdateOrder) {
     const { userId, id, order: newOrder } = data;
 
-    const { canvaId } = await this.get({ id, userId });
+    const currentTodo = await this.get({ id, userId });
+
+    if (newOrder == currentTodo.order) return currentTodo;
+
+    const { canvaId } = currentTodo;
 
     const checkReplacement = await this.getTodoFromOrder({
       canvaId,

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todo
+  name: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      containers:
+        - image: faemeister/nest-todo_todo
+          name: nest-todo-todo-8hglp
+          ports:
+            - containerPort: 50051
+          envFrom:
+            - secretRef:
+                name: databaseurl
+          env:
+            - name: 'TODO_SERVICE_HOST'
+              value: '0.0.0.0'
+            - name: 'TODO_SERVICE_PORT'
+              value: '50051'

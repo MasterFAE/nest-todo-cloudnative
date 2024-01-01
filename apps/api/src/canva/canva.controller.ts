@@ -1,5 +1,4 @@
 import { User } from '@app/shared/decorators/user.decorator';
-import { OwnerGuard } from '@app/shared/guards/owner.guard';
 
 import {
   Controller,
@@ -58,7 +57,6 @@ export class CanvaController implements OnModuleInit {
   }
 
   @Post('')
-  @UseGuards(OwnerGuard)
   async create(@User('sub') userId, @Body() data: CreateCanvaDto) {
     try {
       const serverResponse = await firstValueFrom(
@@ -71,7 +69,6 @@ export class CanvaController implements OnModuleInit {
   }
 
   @Put('')
-  @UseGuards(OwnerGuard)
   async update(@User('sub') userId, @Body() data: UpdateCanvaDto) {
     try {
       const serverResponse = await firstValueFrom(

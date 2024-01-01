@@ -28,6 +28,7 @@ model Todo {
   order     Int      @default(0)
   userId    String
   user      User     @relation(fields: [userId], references: [id], name: "User_Todos")
+  status    Boolean  @default(false)
   canvaId   String
   canva     Canva    @relation(fields: [canvaId], references: [id], name: "Canva_Todos")
   createdAt DateTime @default(now())

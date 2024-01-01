@@ -6,7 +6,8 @@ export const GRPC_TODO: GRPC_PACKAGE = {
   protoName: 'todo',
   packageName: 'todo',
   serviceName: 'TodoService',
-  port: 50052,
+  host: process.env['TODO_SERVICE_HOST'],
+  port: process.env['TODO_SERVICE_PORT'],
 };
 
 interface Empty {}
@@ -43,6 +44,7 @@ export class TodoUpdate {
   title: string;
   content: string;
   userId: string;
+  status: boolean;
 }
 
 export class TodoDelete {

@@ -32,6 +32,7 @@ message Todo {
   string createdAt = 6;
   string updatedAt = 7;
   string userId = 8;
+  bool status = 9;
 }
 
 
@@ -56,6 +57,7 @@ message TodoUpdate {
   string title = 2;
   string content = 3;
   string userId = 4;
+  bool status = 5;
 }
 
 message TodoDelete {

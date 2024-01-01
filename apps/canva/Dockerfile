@@ -1,34 +1,32 @@
 FROM node:alpine AS development
-ARG PORT=3000
-EXPOSE ${PORT} 50051
-
+EXPOSE 50052
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json nest-cli.json
-COPY apps/api apps/api
 COPY libs libs
+COPY apps/canva apps/canva
+COPY prisma ./prisma/
 COPY proto proto
 
-RUN npm install
+RUN npm install && npx prisma generate
 
-RUN npm run build api
-# CMD [ "npm", "run", "start:dev", "api" ]
+RUN npm run build canva
 
 FROM node:alpine AS production
+EXPOSE 50052
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
-
-ARG PORT=3000
-EXPOSE ${PORT} 50051
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm i --omit=dev
 
 COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/prisma ./prisma
 
-CMD ["node", "dist/apps/api/src/main"]
+RUN npm install --omit=dev && npx prisma generate
+
+CMD ["node", "dist/apps/canva/src/main"]
