@@ -9,13 +9,6 @@ pipeline {
         }
         
         
-        stage("Dependency"){
-            steps {
-                bat "sudo apt-get update"
-                bat "sudo apt-get install npm"
-            }
-        }
-        
         stage("Build") {
             steps {
                 bat 'npx prisma generate'
