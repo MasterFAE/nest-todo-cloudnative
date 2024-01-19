@@ -7,6 +7,13 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage("Dependency"){
+            steps {
+                bat "npm install -g npm"
+                bat "npm install"
+            }
+        }
         
         
         stage("Build") {
