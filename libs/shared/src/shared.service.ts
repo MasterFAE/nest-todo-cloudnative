@@ -45,6 +45,9 @@ export class SharedService implements ISharedService {
         package: packageName,
         protoPath: join(__dirname, `../${protoName}.proto`),
         url: `${host}:${port}`,
+        loader: {
+          includeDirs: [join(__dirname, `../health.proto`)],
+        },
       },
     };
   }

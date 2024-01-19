@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { TodoModule } from './todo.module';
-import { SharedService } from '@app/shared';
+import { GRPC_PACKAGE, SharedService } from '@app/shared';
 import { Logger } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { GRPC_TODO } from '@app/shared/types/service/todo';
+import { GRPC_HEALTH } from '@app/shared/types/service/health';
 
 async function bootstrap() {
   const app = await NestFactory.create(TodoModule);
@@ -16,6 +17,12 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(GRPC_TODO),
   );
+
+  const healthPackage: GRPC_PACKAGE = { ...GRPC_HEALTH, host: GRPC_TODO.host };
+  app.connectMicroservice<MicroserviceOptions>(
+    sharedService.getGrpcOptions(healthPackage),
+  );
+
   await app.startAllMicroservices();
 
   logger.verbose('------------------------------------');

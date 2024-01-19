@@ -18,18 +18,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/shared": [
-        "libs/shared/src"
-      ],
-      "@app/shared/*": [
-        "libs/shared/src/*"
-      ],
-      "@app/prisma": [
-        "libs/prisma/src"
-      ],
-      "@app/prisma/*": [
-        "libs/prisma/src/*"
-      ]
+      "@app/shared": ["libs/shared/src"],
+      "@app/shared/*": ["libs/shared/src/*"],
+      "@app/prisma": ["libs/prisma/src"],
+      "@app/prisma/*": ["libs/prisma/src/*"],
+      "@app/microservice-health": ["libs/microservice-health/src"],
+      "@app/microservice-health/*": ["libs/microservice-health/src/*"]
     }
   }
 }

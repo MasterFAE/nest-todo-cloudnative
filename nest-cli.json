@@ -18,9 +18,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -31,9 +29,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -44,9 +40,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/canva/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -57,9 +51,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/todo/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -79,6 +71,15 @@
       "sourceRoot": "libs/prisma/src",
       "compilerOptions": {
         "tsConfigPath": "libs/prisma/tsconfig.lib.json"
+      }
+    },
+    "microservice-health": {
+      "type": "library",
+      "root": "libs/microservice-health",
+      "entryFile": "index",
+      "sourceRoot": "libs/microservice-health/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/microservice-health/tsconfig.lib.json"
       }
     }
   }

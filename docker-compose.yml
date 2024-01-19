@@ -54,39 +54,39 @@ services:
       - .env
     networks:
       - api-network
-  # todo:
-  #   build:
-  #     target: development
-  #     context: .
-  #     dockerfile: ./apps/todo/Dockerfile
-  #   command: npm run start:dev todo
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #   volumes:
-  #     - '.:/usr/src/app'
-  #     - '/usr/src/app/node_modules'
-  #     - ./proto:/proto
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - api-network
-  # canva:
-  #   build:
-  #     target: development
-  #     context: .
-  #     dockerfile: ./apps/canva/Dockerfile
-  #   command: npm run start:dev canva
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #   volumes:
-  #     - '.:/usr/src/app'
-  #     - '/usr/src/app/node_modules'
-  #     - ./proto:/proto
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - api-network
+  todo:
+    build:
+      target: development
+      context: .
+      dockerfile: ./apps/todo/Dockerfile
+    command: npm run start:dev todo
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+      - ./proto:/proto
+    env_file:
+      - .env
+    networks:
+      - api-network
+  canva:
+    build:
+      target: development
+      context: .
+      dockerfile: ./apps/canva/Dockerfile
+    command: npm run start:dev canva
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+      - ./proto:/proto
+    env_file:
+      - .env
+    networks:
+      - api-network
 networks:
   api-network:

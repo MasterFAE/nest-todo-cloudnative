@@ -7,12 +7,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { PrismaModule } from '@app/prisma';
 import { PassportModule } from '@nestjs/passport';
+import { MicroService_HealthModule } from '@app/microservice-health';
 
 @Module({
   imports: [
     PrismaModule,
     SharedModule,
     PassportModule,
+    MicroService_HealthModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {

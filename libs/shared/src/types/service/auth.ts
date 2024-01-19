@@ -1,6 +1,7 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { GRPC_PACKAGE } from '@app/shared';
+import { HealthCheckRequest, HealthCheckResponse } from './health';
 
 export const GRPC_AUTH: GRPC_PACKAGE = {
   protoName: 'auth',

@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { CanvaModule } from './canva.module';
-import { SharedService } from '@app/shared';
+import { GRPC_PACKAGE, SharedService } from '@app/shared';
 import { Logger } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { GRPC_CANVA } from '@app/shared/types/service/canva';
+import { GRPC_HEALTH } from '@app/shared/types/service/health';
 
 async function bootstrap() {
   const app = await NestFactory.create(CanvaModule);
@@ -15,6 +16,12 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(GRPC_CANVA),
   );
+
+  const healthPackage: GRPC_PACKAGE = { ...GRPC_HEALTH, host: GRPC_CANVA.host };
+  app.connectMicroservice<MicroserviceOptions>(
+    sharedService.getGrpcOptions(healthPackage),
+  );
+
   await app.startAllMicroservices();
 
   logger.verbose('------------------------------------');

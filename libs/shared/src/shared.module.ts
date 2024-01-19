@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { SharedService } from './shared.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {

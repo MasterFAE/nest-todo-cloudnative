@@ -13,7 +13,6 @@ service AuthService {
 
 message Empty {}
 
-
 message UserId {
   string id = 1;
 }

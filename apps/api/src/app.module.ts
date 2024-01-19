@@ -7,9 +7,11 @@ import { GrpcErrorInterceptor } from './grpc-exception.interceptor';
 import { TodoModule } from './todo/todo.module';
 import { GRPC_AUTH } from '@app/shared/types/service/auth';
 import { CanvaModule } from './canva/canva.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
+    HealthModule,
     TodoModule,
     AuthModule,
     CanvaModule,
