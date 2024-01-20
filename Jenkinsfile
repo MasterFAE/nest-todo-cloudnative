@@ -8,21 +8,6 @@ pipeline {
             }
         }
 
-        stage("Dependency"){
-            steps {
-                bat "npm install -g npm"
-                bat "npm install"
-            }
-        }
-        
-        
-        stage("Build") {
-            steps {
-                bat 'npx prisma generate'
-                bat "npm run build"
-            }
-        }
-        
         stage('Build Docker Images') {
             steps {
                 script {
@@ -35,12 +20,10 @@ pipeline {
                     imageNames.each { imageName ->
                         def imageDir = "${appsDir}/${imageName}"
 
-                        // Build the Docker image
-                        docker.build("${imageName}", "${imageDir}")
-
                         // Push the Docker image to a registry if needed
-                        docker.withRegistry('https://hub.docker.com/', 'dockerhub') {
-                            docker.image("${imageName}").push()
+                        withDockerRegistry(credentialsId: 'dockerhub') {
+                            bat "cd ${imageDir} && docker build -t faemeister/nest_todo-${imageName} -f . ../.."
+                            docker.image("faemeister/nest_todo-${imageName}").push()
                         }
                     }
                 }
