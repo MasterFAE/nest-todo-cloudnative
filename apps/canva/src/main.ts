@@ -11,18 +11,23 @@ async function bootstrap() {
   const sharedService = app.get(SharedService);
   const logger = app.get(Logger);
 
+  const grpcPackageOptions = GRPC_CANVA;
   app.useLogger(logger);
 
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(GRPC_CANVA),
+    sharedService.getGrpcOptions(grpcPackageOptions),
   );
 
-  const healthPackage: GRPC_PACKAGE = { ...GRPC_HEALTH, host: GRPC_CANVA.host };
+  const healthPackage: GRPC_PACKAGE = {
+    ...GRPC_HEALTH,
+    host: grpcPackageOptions.host,
+  };
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(healthPackage),
   );
 
   await app.startAllMicroservices();
+  await app.listen(grpcPackageOptions.httpPort);
 
   logger.verbose('------------------------------------');
   logger.verbose('[Canva Service]: Canva Service is up!');

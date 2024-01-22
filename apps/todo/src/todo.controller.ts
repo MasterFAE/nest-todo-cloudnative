@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { RpcException } from '@nestjs/microservices';
 import {
@@ -14,9 +14,11 @@ import {
 } from '@app/shared/types/service/todo';
 import { Todo } from '@prisma/client';
 import serviceExceptionGenerator from '@app/shared/helper/functions/serviceExceptionGenerator';
+import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.interceptor';
 
 @Controller()
 @TodoServiceControllerMethods()
+@UseInterceptors(new GrpcLoggingInterceptor(new Logger()))
 export class TodoController implements ITodoServiceController {
   constructor(private readonly todoService: TodoService) {}
 

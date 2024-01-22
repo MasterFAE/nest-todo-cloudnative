@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: api
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '50051'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
         - image: faemeister/nest-todo_api

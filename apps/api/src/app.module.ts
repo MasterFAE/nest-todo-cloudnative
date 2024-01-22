@@ -8,6 +8,8 @@ import { TodoModule } from './todo/todo.module';
 import { GRPC_AUTH } from '@app/shared/types/service/auth';
 import { CanvaModule } from './canva/canva.module';
 import { HealthModule } from './health/health.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,6 +19,15 @@ import { HealthModule } from './health/health.module';
     CanvaModule,
     SharedModule.registerRMQ('AUTH_SERVICE', process.env.RABBITMQ_AUTH_QUEUE),
     SharedModule.registerGRPC([GRPC_AUTH]),
+    PrometheusModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          defaultLabels: { app: 'api' },
+          path: configService.get('PROMETHEUS_METRIC_PATH'),
+        };
+      },
+      inject: [ConfigService],
+    }),
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },

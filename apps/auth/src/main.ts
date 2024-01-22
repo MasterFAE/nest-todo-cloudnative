@@ -1,37 +1,40 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
-import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { GRPC_PACKAGE, SharedService } from '@app/shared';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { GRPC_AUTH } from '@app/shared/types/service/auth';
 import { GRPC_HEALTH } from '@app/shared/types/service/health';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
-  const configService = app.get(ConfigService);
   const sharedService = app.get(SharedService);
   const logger = app.get(Logger);
-  const AUTH_QUEUE = configService.get('RABBITMQ_AUTH_QUEUE');
+  // const AUTH_QUEUE = configService.get('RABBITMQ_AUTH_QUEUE');
+  const grpcPackageOptions = GRPC_AUTH;
 
   app.useLogger(logger);
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.connectMicroservice<MicroserviceOptions>(
+    sharedService.getGrpcOptions(grpcPackageOptions),
+  );
 
   // app.connectMicroservice<MicroserviceOptions>(
   //   sharedService.getRmqOptions(AUTH_QUEUE),
   // );
 
-  app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(GRPC_AUTH),
-  );
-
-  const healthPackage: GRPC_PACKAGE = { ...GRPC_HEALTH, host: GRPC_AUTH.host };
+  const healthPackage: GRPC_PACKAGE = {
+    ...GRPC_HEALTH,
+    host: grpcPackageOptions.host,
+  };
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(healthPackage),
   );
 
   await app.startAllMicroservices();
+  await app.listen(grpcPackageOptions.httpPort);
+
+  app.useLogger(logger);
 
   logger.verbose('------------------------------------');
   logger.verbose('[Auth Service]: Auth Service is up!');

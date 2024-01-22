@@ -9,6 +9,7 @@ export const GRPC_CANVA: GRPC_PACKAGE = {
   serviceName: 'CanvaService',
   host: process.env['CANVA_SERVICE_HOST'],
   port: process.env['CANVA_SERVICE_PORT'],
+  httpPort: process.env['CANVA_SERVICE_HTTP_PORT'],
 };
 
 interface Empty {}

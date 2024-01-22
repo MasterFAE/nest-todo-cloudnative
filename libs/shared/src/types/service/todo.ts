@@ -8,6 +8,7 @@ export const GRPC_TODO: GRPC_PACKAGE = {
   serviceName: 'TodoService',
   host: process.env['TODO_SERVICE_HOST'],
   port: process.env['TODO_SERVICE_PORT'],
+  httpPort: process.env['TODO_SERVICE_HTTP_PORT'],
 };
 
 interface Empty {}

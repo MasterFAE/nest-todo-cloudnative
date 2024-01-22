@@ -12,18 +12,22 @@ async function bootstrap() {
   const sharedService = app.get(SharedService);
   const logger = app.get(Logger);
 
+  const grpcPackageOptions = GRPC_TODO;
   app.useLogger(logger);
-
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(GRPC_TODO),
+    sharedService.getGrpcOptions(grpcPackageOptions),
   );
 
-  const healthPackage: GRPC_PACKAGE = { ...GRPC_HEALTH, host: GRPC_TODO.host };
+  const healthPackage: GRPC_PACKAGE = {
+    ...GRPC_HEALTH,
+    host: grpcPackageOptions.host,
+  };
   app.connectMicroservice<MicroserviceOptions>(
     sharedService.getGrpcOptions(healthPackage),
   );
 
   await app.startAllMicroservices();
+  await app.listen(grpcPackageOptions.httpPort);
 
   logger.verbose('------------------------------------');
   logger.verbose('[Todo Service]: Todo Service is up!');

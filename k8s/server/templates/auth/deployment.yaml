@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: auth
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '50051'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
         - image: faemeister/nest-todo_auth
@@ -29,3 +33,5 @@ spec:
               value: '0.0.0.0'
             - name: 'AUTH_SERVICE_PORT'
               value: '50051'
+            - name: 'AUTH_SERVICE_HTTP_PORT'
+              value: '3000'

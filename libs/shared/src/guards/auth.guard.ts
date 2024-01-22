@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -16,6 +15,7 @@ import {
   GRPC_AUTH,
   UserSignJwt,
 } from '../types/service/auth';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     @Inject(GRPC_AUTH.serviceName) private readonly client: ClientGrpc,
     private readonly reflector: Reflector,
+    private readonly configService: ConfigService,
   ) {}
 
   onModuleInit() {
@@ -43,6 +44,8 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true;
 
     const req = context.switchToHttp().getRequest();
+    if (req.path == this.configService.get('PROMETHEUS_METRIC_PATH'))
+      return true;
     const access_token = req.cookies.access_token ?? '';
 
     try {

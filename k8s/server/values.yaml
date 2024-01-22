@@ -1,0 +1,13 @@
+prometheus:
+  alertManager:
+    enabled: false
+  pushGateway:
+    enabled: false
+  nodeExporter:
+    enabled: true
+
+grafana:
+  service:
+    type: NodePort
+    port: 4000
+    targetPort: 4000

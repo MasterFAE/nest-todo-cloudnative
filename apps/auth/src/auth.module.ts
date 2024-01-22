@@ -8,6 +8,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { PrismaModule } from '@app/prisma';
 import { PassportModule } from '@nestjs/passport';
 import { MicroService_HealthModule } from '@app/microservice-health';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.interceptor';
 
 @Module({
   imports: [
@@ -20,6 +22,15 @@ import { MicroService_HealthModule } from '@app/microservice-health';
         return {
           secret: configService.get('JWT_SECRET'),
           signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN') },
+        };
+      },
+      inject: [ConfigService],
+    }),
+    PrometheusModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          defaultLabels: { app: 'auth' },
+          path: configService.get('PROMETHEUS_METRIC_PATH'),
         };
       },
       inject: [ConfigService],

@@ -5,5 +5,6 @@ export type GRPC_PACKAGE = {
   packageName: string;
   serviceName: string;
   host?: string;
-  port?: string;
+  port?: string | number;
+  httpPort?: string | number;
 };

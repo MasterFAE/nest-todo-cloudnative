@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger, UseInterceptors } from '@nestjs/common';
 import { CanvaService } from './canva.service';
 import { RpcException } from '@nestjs/microservices';
 import { Canva } from '@prisma/client';
@@ -13,9 +13,11 @@ import {
   CanvaServiceControllerMethods,
 } from '@app/shared/types/service/canva';
 import serviceExceptionGenerator from '@app/shared/helper/functions/serviceExceptionGenerator';
+import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.interceptor';
 
 @Controller()
 @CanvaServiceControllerMethods()
+@UseInterceptors(new GrpcLoggingInterceptor(new Logger()))
 export class CanvaController implements ICanvaServiceController {
   constructor(private readonly canvaService: CanvaService) {}
 
