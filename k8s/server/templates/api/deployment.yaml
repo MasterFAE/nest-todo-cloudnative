@@ -15,13 +15,15 @@ spec:
         app: api
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/port: '50051'
+        prometheus.io/port: '3000'
         prometheus.io/path: '/metrics'
     spec:
       containers:
         - image: faemeister/nest-todo_api
           name: nest-todo-api
           env:
+            - name: 'PROMETHEUS_METRIC_PATH'
+              value: '/metrics'
             - name: 'AUTH_SERVICE_HOST'
               value: 'auth'
             - name: 'AUTH_SERVICE_PORT'

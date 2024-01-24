@@ -1,8 +1,4 @@
-import {
-  Controller,
-  Logger,
-  UseInterceptors,
-} from '../../../node_modules/@nestjs/common';
+import { Controller, Logger, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RpcException } from '@nestjs/microservices';
 import {
@@ -22,6 +18,7 @@ import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.in
 
 @Controller()
 @AuthServiceControllerMethods()
+// @ts-ignore
 @UseInterceptors(new GrpcLoggingInterceptor(new Logger()))
 export class AuthController implements IAuthServiceController {
   constructor(private readonly authService: AuthService) {}

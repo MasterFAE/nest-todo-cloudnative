@@ -10,5 +10,13 @@ spec:
       port: 50051
       protocol: TCP
       targetPort: 50051
+    - name: 'todo-http'
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    - name: 'todo-health'
+      port: 9999
+      protocol: TCP
+      targetPort: 9999
   selector:
     app: todo

@@ -23,10 +23,14 @@ spec:
           name: nest-todo-todo-8hglp
           ports:
             - containerPort: 50051
+            - containerPort: 3000
+            - containerPort: 9999
           envFrom:
             - secretRef:
                 name: databaseurl
           env:
+            - name: 'PROMETHEUS_METRIC_PATH'
+              value: '/metrics'
             - name: 'TODO_SERVICE_HOST'
               value: '0.0.0.0'
             - name: 'TODO_SERVICE_PORT'

@@ -9,7 +9,6 @@ import { PrismaModule } from '@app/prisma';
 import { PassportModule } from '@nestjs/passport';
 import { MicroService_HealthModule } from '@app/microservice-health';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
-import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.interceptor';
 
 @Module({
   imports: [

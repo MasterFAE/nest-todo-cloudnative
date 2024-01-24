@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Status } from '@grpc/grpc-js/build/src/constants';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
+import { throwError } from 'rxjs/internal/observable/throwError';
 
 @Injectable()
 export class GrpcLoggingInterceptor {
@@ -20,30 +21,38 @@ export class GrpcLoggingInterceptor {
     const userAgent = request.getContext().get('user-agent');
     const correlationKey = uuidv4();
     return next.handle().pipe(
-      tap((data) => {
-        const responseLength = Buffer.from(JSON.stringify(data) ?? '').length;
-        const logMessage = this.getLogMessage({
-          start,
-          correlationKey,
-          context,
-          userId,
-          userAgent,
-        });
-        this.logger.log(logMessage + ` ${responseLength}B`);
-      }),
-      catchError(({ error }) => {
-        const logMessage = this.getLogMessage({
-          start,
-          correlationKey,
-          context,
-          userId,
-          userAgent,
-        });
-        const errType = Status[error.code];
-        error.code != Status.INTERNAL
-          ? this.logger.warn(`${errType}: ${logMessage}`)
-          : this.logger.error(`${errType}: ${logMessage}`);
-        throw new RpcException(error);
+      tap({
+        next: (data) => {
+          try {
+            const responseLength = Buffer.from(
+              JSON.stringify(data) ?? '',
+            ).length;
+            const logMessage = this.getLogMessage({
+              start,
+              correlationKey,
+              context,
+              userId,
+              userAgent,
+            });
+            this.logger.log(logMessage + ` ${responseLength}B`);
+          } catch (error) {
+            console.log({ error });
+          }
+        },
+        error: ({ error }) => {
+          const logMessage = this.getLogMessage({
+            start,
+            correlationKey,
+            context,
+            userId,
+            userAgent,
+          });
+          const errType = Status[error.code];
+          error.code != Status.INTERNAL
+            ? this.logger.warn(`${errType}: ${logMessage}`)
+            : this.logger.error(`${errType}: ${logMessage}`);
+          return throwError(() => new RpcException(error));
+        },
       }),
     );
   }
