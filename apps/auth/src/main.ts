@@ -38,6 +38,10 @@ async function bootstrap() {
 
   logger.verbose('------------------------------------');
   logger.verbose('[Auth Service]: Auth Service is up!');
+  logger.verbose(`[Auth Service]: HOST: ${grpcPackageOptions.host}`);
+  logger.verbose(`[Auth Service]: GRPC: ${grpcPackageOptions.port}`);
+  logger.verbose(`[Auth Service]: HTTP: ${grpcPackageOptions.httpPort}`);
+  logger.verbose(`[Auth Service]: HEALTH: ${healthPackage.port}`);
   logger.verbose('------------------------------------');
 }
 bootstrap();

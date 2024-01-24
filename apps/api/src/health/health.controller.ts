@@ -31,7 +31,7 @@ export class HealthController {
           {
             package: 'grpc.health.v1',
             protoPath: join(__dirname, '../health.proto'),
-            timeout: 5000,
+            timeout: 10000,
             url: `${GRPC_AUTH.host}:${GRPC_HEALTH.port}`,
           },
         ),
@@ -42,7 +42,7 @@ export class HealthController {
           {
             package: 'grpc.health.v1',
             protoPath: join(__dirname, '../health.proto'),
-            timeout: 5000,
+            timeout: 10000,
             url: `${GRPC_CANVA.host}:${GRPC_HEALTH.port}`,
           },
         ),
@@ -53,7 +53,7 @@ export class HealthController {
           {
             package: 'grpc.health.v1',
             protoPath: join(__dirname, '../health.proto'),
-            timeout: 5000,
+            timeout: 10000,
             url: `${GRPC_TODO.host}:${GRPC_HEALTH.port}`,
           },
         ),

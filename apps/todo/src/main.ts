@@ -31,6 +31,10 @@ async function bootstrap() {
 
   logger.verbose('------------------------------------');
   logger.verbose('[Todo Service]: Todo Service is up!');
+  logger.verbose(`[Todo Service]: HOST: ${grpcPackageOptions.host}`);
+  logger.verbose(`[Todo Service]: GRPC: ${grpcPackageOptions.port}`);
+  logger.verbose(`[Todo Service]: HTTP: ${grpcPackageOptions.httpPort}`);
+  logger.verbose(`[Todo Service]: HEALTH: ${healthPackage.port}`);
   logger.verbose('------------------------------------');
 }
 bootstrap();

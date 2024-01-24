@@ -31,6 +31,10 @@ async function bootstrap() {
 
   logger.verbose('------------------------------------');
   logger.verbose('[Canva Service]: Canva Service is up!');
+  logger.verbose(`[Canva Service]: HOST: ${grpcPackageOptions.host}`);
+  logger.verbose(`[Canva Service]: GRPC: ${grpcPackageOptions.port}`);
+  logger.verbose(`[Canva Service]: HTTP: ${grpcPackageOptions.httpPort}`);
+  logger.verbose(`[Canva Service]: HEALTH: ${healthPackage.port}`);
   logger.verbose('------------------------------------');
 }
 bootstrap();

@@ -1,4 +1,4 @@
-import { ConsoleLogger, Module } from '@nestjs/common';
+import { ConsoleLogger, Logger, Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaModule } from '@app/prisma';
@@ -6,6 +6,7 @@ import { MicroService_HealthController } from './health.controller';
 
 @Module({
   controllers: [MicroService_HealthController],
+  providers: [Logger],
   imports: [
     PrismaModule,
     TerminusModule.forRoot({
