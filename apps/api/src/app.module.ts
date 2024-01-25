@@ -1,7 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { SharedModule } from '@app/shared';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthGuard } from '@app/shared/guards/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { GrpcErrorInterceptor } from './grpc-exception.interceptor';
 import { TodoModule } from './todo/todo.module';
@@ -10,6 +9,7 @@ import { CanvaModule } from './canva/canva.module';
 import { HealthModule } from './health/health.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from './lib/guards/auth.guard';
 
 @Module({
   imports: [

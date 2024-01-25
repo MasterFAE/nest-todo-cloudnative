@@ -1,4 +1,3 @@
-import { Public } from '@app/shared/decorators/public.decorator';
 import {
   Body,
   Controller,
@@ -10,10 +9,11 @@ import {
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import setCookieOptions from '@app/shared/helper/functions/setCookieOptions';
-import { User } from '@app/shared/decorators/user.decorator';
 import { GRPC_AUTH, IAuthServiceClient } from '@app/shared/types/service/auth';
 import { CreateUserDto, LoginDto } from './dto';
+import { Public } from '../lib/decorators/public.decorator';
+import { User } from '../lib/decorators/user.decorator';
+import setCookieOptions from '../lib/setCookieOptions';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
@@ -28,12 +28,12 @@ export class AuthController implements OnModuleInit {
   }
 
   @Public()
-  @Get('test2')
+  @Get('test')
   pri() {
     return 'sa';
   }
 
-  @Get('test')
+  @Get('current-user')
   printTest(@User() user) {
     return user;
   }

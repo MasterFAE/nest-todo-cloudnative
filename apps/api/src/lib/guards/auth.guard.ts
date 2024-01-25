@@ -9,13 +9,15 @@ import { Reflector } from '@nestjs/core';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import setCookieOptions from '@app/shared/helper/functions/setCookieOptions';
-import {
-  IAuthServiceClient,
-  GRPC_AUTH,
-  UserSignJwt,
-} from '../types/service/auth';
+import setCookieOptions from 'apps/api/src/lib/setCookieOptions';
+
 import { ConfigService } from '@nestjs/config';
+import { Status } from '@grpc/grpc-js/build/src/constants';
+import {
+  GRPC_AUTH,
+  IAuthServiceClient,
+  UserSignJwt,
+} from '@app/shared/types/service/auth';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -58,7 +60,8 @@ export class AuthGuard implements CanActivate {
       req.user = data.user;
       return true;
     } catch (error) {
-      if (error.code != 8) throw new UnauthorizedException();
+      if (error.code != Status.RESOURCE_EXHAUSTED)
+        throw new UnauthorizedException();
 
       const expiredAt = error.details;
       const { user } = await firstValueFrom(

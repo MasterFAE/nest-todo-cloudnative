@@ -6,11 +6,11 @@ import { PrismaModule } from '@app/prisma';
 import { MicroService_HealthModule } from '@app/microservice-health';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ConfigService } from '@nestjs/config';
-import { GrpcLoggingInterceptor } from '@app/shared/interceptors/grpc-logging.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { GRPC_CANVA } from '@app/shared/types/service/canva';
 
 @Module({
   imports: [
+    SharedModule.registerGRPC([GRPC_CANVA]),
     SharedModule,
     PrismaModule,
     MicroService_HealthModule,

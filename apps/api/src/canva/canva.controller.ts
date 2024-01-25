@@ -1,5 +1,3 @@
-import { User } from '@app/shared/decorators/user.decorator';
-
 import {
   Controller,
   Get,
@@ -10,7 +8,6 @@ import {
   Delete,
   Param,
   Body,
-  UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
@@ -19,6 +16,7 @@ import {
   GRPC_CANVA,
   ICanvaServiceClient,
 } from '@app/shared/types/service/canva';
+import { User } from '../lib/decorators/user.decorator';
 
 @Controller('canva')
 export class CanvaController implements OnModuleInit {

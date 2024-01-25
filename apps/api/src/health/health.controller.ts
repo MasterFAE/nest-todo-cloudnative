@@ -4,13 +4,13 @@ import {
   HealthCheck,
   HealthCheckService,
 } from '@nestjs/terminus';
-import { Public } from '@app/shared/decorators/public.decorator';
 import { GrpcOptions } from '@nestjs/microservices';
 import { GRPC_AUTH } from '@app/shared/types/service/auth';
 import { join } from 'path';
 import { GRPC_HEALTH } from '@app/shared/types/service/health';
 import { GRPC_CANVA } from '@app/shared/types/service/canva';
 import { GRPC_TODO } from '@app/shared/types/service/todo';
+import { Public } from '../lib/decorators/public.decorator';
 
 @Controller('health')
 export class HealthController {

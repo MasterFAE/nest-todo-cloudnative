@@ -3,8 +3,6 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { PrismaService } from '@app/prisma';
 import * as bcrypt from 'bcryptjs';
-
-import { CustomRpcException } from '@app/shared/exceptions/custom-rpc.exception';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import {
   JwtToken,
@@ -16,6 +14,7 @@ import {
   UserLogin,
 } from '@app/shared/types/service/auth';
 import { User } from '@prisma/client';
+import { ServiceException } from '@app/shared/exceptions/custom-service.exception';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +30,7 @@ export class AuthService {
   }: UserCreate): Promise<UserTokenPayload> {
     const checkUser = await this.checkUser(email, username);
     if (checkUser && checkUser.id)
-      throw new CustomRpcException(Status.ALREADY_EXISTS);
+      throw new ServiceException(Status.ALREADY_EXISTS, 'User already exists');
     const hash = bcrypt.hashSync(password, 10);
     const newUser = await this.prisma.user.create({
       data: {
@@ -54,10 +53,18 @@ export class AuthService {
 
   async login({ email, password }: UserLogin): Promise<UserTokenPayload> {
     const checkUser = await this.checkUser(email);
-    if (!checkUser) throw new CustomRpcException(Status.INVALID_ARGUMENT);
+    if (!checkUser)
+      throw new ServiceException(
+        Status.INVALID_ARGUMENT,
+        'Invalid email or password',
+      );
 
     const compare = await bcrypt.compare(password, checkUser.password);
-    if (!compare) throw new CustomRpcException(Status.INVALID_ARGUMENT);
+    if (!compare)
+      throw new ServiceException(
+        Status.INVALID_ARGUMENT,
+        'Invalid email or password',
+      );
 
     // Instead of delete user.password using this
     const { password: _, ...noPasswordUser } = checkUser;
@@ -99,11 +106,11 @@ export class AuthService {
       return { user, exp };
     } catch (error) {
       if (error instanceof TokenExpiredError)
-        throw new CustomRpcException(
+        throw new ServiceException(
           Status.RESOURCE_EXHAUSTED,
           error.expiredAt.toString(),
         );
-      throw new CustomRpcException(Status.UNAUTHENTICATED);
+      throw new ServiceException(Status.UNAUTHENTICATED);
     }
   }
 
@@ -114,14 +121,13 @@ export class AuthService {
 
   async decodeToken({ token }: JwtToken): Promise<UserJwtPayload> {
     if (!token) {
-      throw new CustomRpcException(Status.INVALID_ARGUMENT);
+      throw new ServiceException(Status.INVALID_ARGUMENT);
     }
-
     try {
       const { user, exp } = await this.jwtService.decode(token);
       return { user, exp };
     } catch (error) {
-      throw new CustomRpcException();
+      throw new ServiceException(Status.UNAUTHENTICATED);
     }
   }
 }

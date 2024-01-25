@@ -1,6 +1,10 @@
 import { PrismaService } from '@app/prisma';
-
 import { CustomRpcException } from '@app/shared/exceptions/custom-rpc.exception';
+import { ServiceException } from '@app/shared/exceptions/custom-service.exception';
+import {
+  GRPC_CANVA,
+  ICanvaServiceClient,
+} from '@app/shared/types/service/canva';
 import {
   TodoCreate,
   TodoDelete,
@@ -10,17 +14,41 @@ import {
   TodoUpdateOrder,
 } from '@app/shared/types/service/todo';
 import { Status } from '@grpc/grpc-js/build/src/constants';
-import { Injectable } from '@nestjs/common';
-import { Todo } from '@prisma/client';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { Canva, Todo } from '@prisma/client';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 @Injectable()
 export class TodoService {
-  constructor(private readonly prisma: PrismaService) {}
+  private canvaServer: ICanvaServiceClient;
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(GRPC_CANVA.serviceName) private readonly client: ClientGrpc,
+  ) {}
+
+  onModuleInit() {
+    this.canvaServer = this.client.getService<ICanvaServiceClient>(
+      GRPC_CANVA.serviceName,
+    );
+  }
+
+  async getCanva(canvaId: string, userId: string): Promise<Canva> {
+    try {
+      const canva = await firstValueFrom(
+        this.canvaServer.get({ id: canvaId, userId }),
+      );
+      return canva;
+    } catch (error) {
+      throw new ServiceException(Status.NOT_FOUND, 'Canva not found');
+    }
+  }
 
   async create(data: TodoCreate): Promise<Todo> {
-    const { userId, canvaId, ...todoData } = data;
+    let { userId, canvaId, ...todoData } = data;
+    const canva = await this.getCanva(canvaId, userId);
+    canvaId = canva.id;
     let lastTodo = await this.getLastTodo({ canvaId, userId });
-
     const todo = await this.prisma.todo.create({
       data: {
         ...todoData,
@@ -72,7 +100,7 @@ export class TodoService {
   async get(data: TodoGetId): Promise<Todo> {
     const todo = await this.prisma.todo.findFirst({ where: data });
     if (!todo)
-      throw new CustomRpcException(
+      throw new ServiceException(
         Status.PERMISSION_DENIED,
         'This todo does not belong to the user or does not exist',
       );

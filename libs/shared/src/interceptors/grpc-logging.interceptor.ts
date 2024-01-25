@@ -23,23 +23,18 @@ export class GrpcLoggingInterceptor {
     return next.handle().pipe(
       tap({
         next: (data) => {
-          try {
-            const responseLength = Buffer.from(
-              JSON.stringify(data) ?? '',
-            ).length;
-            const logMessage = this.getLogMessage({
-              start,
-              correlationKey,
-              context,
-              userId,
-              userAgent,
-            });
-            this.logger.log(logMessage + ` ${responseLength}B`);
-          } catch (error) {
-            console.log({ error });
-          }
+          const responseLength = Buffer.from(JSON.stringify(data) ?? '').length;
+          const logMessage = this.getLogMessage({
+            start,
+            correlationKey,
+            context,
+            userId,
+            userAgent,
+          });
+          this.logger.log(logMessage + ` ${responseLength}B`);
         },
-        error: ({ error }) => {
+        error: (err) => {
+          const { error } = err;
           const logMessage = this.getLogMessage({
             start,
             correlationKey,

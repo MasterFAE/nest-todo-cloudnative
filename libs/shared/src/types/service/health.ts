@@ -6,7 +6,7 @@ export var GRPC_HEALTH: GRPC_PACKAGE = {
   serviceName: 'Health',
   port:
     process.env['ENVIRONMENT'] == 'local'
-      ? Math.floor(Math.random() * 10) + 1000
+      ? Math.floor(Math.random() * 100) + 1000
       : '9999',
 };
 

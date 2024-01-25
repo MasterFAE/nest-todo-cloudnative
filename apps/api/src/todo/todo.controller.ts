@@ -1,4 +1,3 @@
-import { User } from '@app/shared/decorators/user.decorator';
 import { GRPC_TODO, ITodoServiceClient } from '@app/shared/types/service/todo';
 import {
   Controller,
@@ -12,8 +11,9 @@ import {
   Body,
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { CreateTodoDto, UpdateTodoDto, UpdateTodoOrderDto } from './dto';
+import { User } from '../lib/decorators/user.decorator';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 @Controller('todo')
 export class TodoController implements OnModuleInit {

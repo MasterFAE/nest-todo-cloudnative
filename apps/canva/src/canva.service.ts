@@ -1,5 +1,5 @@
 import { PrismaService } from '@app/prisma';
-import { CustomRpcException } from '@app/shared/exceptions/custom-rpc.exception';
+import { ServiceException } from '@app/shared/exceptions/custom-service.exception';
 import {
   CanvaCreate,
   CanvaDelete,
@@ -30,7 +30,7 @@ export class CanvaService {
   async delete(data: CanvaDelete): Promise<void> {
     const canva = await this.prisma.canva.findFirst({ where: data });
     if (!canva)
-      throw new CustomRpcException(
+      throw new ServiceException(
         Status.PERMISSION_DENIED,
         'This canva does not belong to the user or does not exist',
       );
@@ -52,7 +52,7 @@ export class CanvaService {
   async get(data: CanvaGetId): Promise<Canva> {
     const canva = await this.prisma.canva.findFirst({ where: data });
     if (!canva)
-      throw new CustomRpcException(
+      throw new ServiceException(
         Status.PERMISSION_DENIED,
         'This canva does not belong to the user or does not exist',
       );
