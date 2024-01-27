@@ -1,6 +1,8 @@
+![todo-app](https://gcdnb.pbrd.co/images/LTGGkUpwsai5.png?o=1)
+
 # Todo App - Backend
 
-![todo-app](https://pasteboard.co/LTGGkUpwsai5.png)
+A Todo Application designed with Microservice Architecture and Cloud Native technologies.
 
 ### Services
 
@@ -19,7 +21,7 @@
 - /canva
   > Responsible from all operations related with "Canva".
 
-![todo-app-flow](https://prnt.sc/i90IMn0hD-MQ)
+![todo-app-flow](https://gcdnb.pbrd.co/images/y6E1MJnzcNYj.png?o=1)
 
 ### Use cases
 
