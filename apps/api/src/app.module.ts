@@ -10,6 +10,7 @@ import { HealthModule } from './health/health.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from './lib/guards/auth.guard';
+import { RequestLoggerInterceptor } from './lib/request-logger.interceptor';
 
 @Module({
   imports: [
@@ -32,6 +33,8 @@ import { AuthGuard } from './lib/guards/auth.guard';
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_INTERCEPTOR, useClass: GrpcErrorInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
+
     Logger,
   ],
 })
