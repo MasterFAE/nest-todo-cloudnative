@@ -1,20 +1,21 @@
 FROM node:alpine AS development
 ARG PORT=3000
 EXPOSE ${PORT} 50051
-
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+RUN npm i -g pnpm
+
+COPY package.json ./
+COPY pnpm-lock.yaml ./
 COPY tsconfig*.json ./
 COPY nest-cli.json nest-cli.json
 COPY apps/api apps/api
 COPY libs libs
 COPY proto proto
 
-RUN npm install
+RUN pnpm install
+RUN pnpm run build api
 
-RUN npm run build api
-# CMD [ "npm", "run", "start:dev", "api" ]
 
 FROM node:alpine AS production
 ARG NODE_ENV=production
@@ -26,8 +27,10 @@ EXPOSE ${PORT} 50051
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY pnpm-lock.yaml ./
 
-RUN npm i --omit=dev
+RUN npm i -g pnpm
+RUN pnpm install --production
 
 COPY --from=development /usr/src/app/dist ./dist
 
