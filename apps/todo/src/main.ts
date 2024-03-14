@@ -15,7 +15,7 @@ async function bootstrap() {
   const grpcPackageOptions = GRPC_TODO;
   app.useLogger(logger);
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(grpcPackageOptions),
+    sharedService.getGrpcServerOptions(grpcPackageOptions),
   );
 
   const healthPackage: GRPC_PACKAGE = {
@@ -23,7 +23,7 @@ async function bootstrap() {
     host: grpcPackageOptions.host,
   };
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(healthPackage),
+    sharedService.getGrpcServerOptions(healthPackage),
   );
 
   await app.startAllMicroservices();

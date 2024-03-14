@@ -33,7 +33,7 @@ export class SharedService implements ISharedService {
   /**
    * Sets up gRPC server connection
    */
-  getGrpcOptions({
+  getGrpcServerOptions({
     packageName,
     protoName,
     host,

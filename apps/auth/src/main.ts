@@ -16,7 +16,7 @@ async function bootstrap() {
   app.useLogger(logger);
 
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(grpcPackageOptions),
+    sharedService.getGrpcServerOptions(grpcPackageOptions),
   );
 
   // app.connectMicroservice<MicroserviceOptions>(
@@ -28,7 +28,7 @@ async function bootstrap() {
     host: grpcPackageOptions.host,
   };
   app.connectMicroservice<MicroserviceOptions>(
-    sharedService.getGrpcOptions(healthPackage),
+    sharedService.getGrpcServerOptions(healthPackage),
   );
 
   await app.startAllMicroservices();
